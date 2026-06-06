@@ -1,6 +1,5 @@
 # CoreSecureBoilerPlate
 
-# Secure Enterprise .NET 10 Boilerplate
 
 A production-ready, highly secure, and observable boilerplate built on top of the **ASP.NET Core 10** ecosystem. This template is architected using **Clean Architecture (Onion Architecture)** patterns alongside **CQRS via MediatR**, specifically designed to satisfy the rigorous security and compliance standards required by medium-to-large scale financial and enterprise applications.
 
