@@ -1,0 +1,49 @@
+﻿Domain Layer: Base Entity & Domain Events
+In Domain-Driven Design (DDD), the Domain Layer is the core of the application and contains the business logic and rules. It must remain decoupled from infrastructure concerns.
+
+The BaseEntity<TId> and IDomainEvent structures serve as the foundation for state management and side-effect communication within the domain model.
+
+1. BaseEntity<TId>
+The BaseEntity<TId> is an abstract class that serves as the blueprint for all domain entities. It encapsulates identity and manages the lifecycle of domain events.
+
+Generic Identity (TId): Allows flexibility in choosing identifier types (e.g., Guid, int, strongly-typed IDs) per entity, enforced by the where TId : notnull constraint.
+
+Encapsulated ID: The Id property has a protected set, ensuring that an entity's identity can only be assigned during creation or via controlled domain behavior, preventing accidental external mutations.
+
+Domain Event Management
+Instead of immediately dispatching events to an external message broker (which would violate layer isolation), the entity accumulates events internally as state changes occur:
+
+_domainEvents: A private list that safely stores events occurring within the entity's boundary.
+
+DomainEvents (Read-Only): Exposes the events as an IReadOnlyCollection<IDomainEvent> to external layers (like the Application layer or DbContext) for dispatching, preventing external code from tampering with the list.
+
+RaiseDomainEvent: A protected method used by inheriting entities to record that something significant happened (e.g., OrderPlacedEvent).
+
+ClearDomainEvents: Invoked by the persistence/dispatching mechanism after the events have been successfully processed, preventing duplicate processing.
+
+2. IDomainEvent
+An interface representing something of note that happened within the domain. Domain events are immutable records of past actions and are named in the past tense.
+
+INotification Integration: Inherits from MediatR’s INotification. This allows the Application layer to easily broadcast these events to multiple internal handlers using the Mediator pattern.
+
+OccurredOn: Captures the exact timestamp (DateTime) when the event took place, ensuring auditability and chronological tracking.
+
+
+📁 Domain/
+│
+├── 📁 Common/            # BaseEntity, ValueObject base records, primitives
+├── 📁 Entities/          # Domain Entities & Aggregate Roots (e.g., Product.cs)
+├── 📁 ValueObjects/      # Immutable types (e.g., Address.cs, Money.cs)
+├── 📁 Events/            # Domain-specific event records
+├── 📁 Services/          # Domain-level service logic
+└── 📁 Exceptions/        # Strongly typed business exceptions (e.g., InsufficientFundsException.cs)
+
+
+Golden Rules of the Domain Layer 
+No Framework Dependencies: Never reference libraries like Microsoft.EntityFrameworkCore or Newtonsoft.Json here.
+Avoid Anemic Domain Models: Entities should not just be passive collections of get; set; properties. Behavior (methods) and state changes belong directly inside the entities.
+Inward Dependency Flow: Other projects like YourApp.Application or YourApp.Infrastructure depend on YourApp.Domain, but the Domain project depends on nothing. 
+Rich Domain Models: Embrace encapsulation and behavior. For example, a Product entity might have methods like AdjustPrice(decimal newPrice) that contain business logic to validate the price change.
+Domain Events: Use domain events to represent significant occurrences within the domain. For instance, when an Order is placed, you might raise an OrderPlacedEvent that other parts of the system can react to.
+Aggregate Roots: Define aggregate roots to ensure consistency boundaries. For example, an Order aggregate root would manage its related OrderItems and ensure that all business rules are enforced when modifying the order.
+By adhering to these principles, the Domain layer remains focused on representing the core business logic and rules, making it easier to maintain and evolve over time without being tightly coupled to specific technologies or frameworks.

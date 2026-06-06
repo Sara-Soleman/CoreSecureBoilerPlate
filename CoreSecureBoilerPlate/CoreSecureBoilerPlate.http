@@ -1,0 +1,6 @@
+@CoreSecureBoilerPlate_HostAddress = http://localhost:5110
+
+GET {{CoreSecureBoilerPlate_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

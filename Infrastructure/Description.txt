@@ -1,0 +1,14 @@
+﻿هذه الطبقة هي المسؤول البرمجي عن تحقيق وتنفيذ (Implementation) جميع الواجهات (Interfaces) والعقود التي حددناها في طبقة الـ Application. هنا نقوم بدمج Entity Framework Core (EF Core) للتعامل مع قاعدة البيانات، مع الحفاظ على نقاء الطبقات السابقة.
+
+في .NET 10 و EF Core 10، نستغل ميزات رائعة جداً مثل Complex Types لتمثيل الـ Value Objects (مثل كائن Money) بدون الحاجة للجداول الوسيطة المملة، بالإضافة إلى المعالجة التلقائية لأحداث الدومين (Domain Events) أثناء حفظ البيانات.
+
+📁 هيكل مجلدات YourApp.Infrastructure/
+📁 YourApp.Infrastructure/
+│
+├── 📁 Persistence/          # كل ما يتعلق بقاعدة البيانات والتخزين
+│   ├── 📁 Configurations/   # إعدادات الجداول (EF Maps) وتعيين الـ Value Objects
+│   ├── 📁 Repositories/     # تطبيق المستودعات (ProductRepository)
+│   └── ApplicationDbContext.cs
+│
+└── DependencyInjection.cs   # ربط طبقة البنية التحتية بـ الـ DI الخاص بالـ API
+

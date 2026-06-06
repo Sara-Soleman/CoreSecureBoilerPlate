@@ -1,0 +1,15 @@
+﻿Here, we will build an ultra-fast and lightweight API using Minimal APIs in .NET 10 to connect endpoints directly to commands and queries via the MediatR library.
+
+In .NET 10, Minimal APIs have become the standard for building modern microservices and APIs because they eliminate bulky controller files, 
+allow for direct injection of handles and ISenders into variables with very clean and concise code, and support Native AOT for extremely fast execution.
+
+📁 YourApp.Api/ Folder Structure
+Plaintext
+📁 YourApp.Api/
+│
+├── 📁 Endpoints/ # Divide endpoints based on features for easy maintenance
+│ └── ProductEndpoints.cs
+│
+├── AppExtensions.cs # Cleans up the Program.cs file and compiles endpoints
+├── appsettings.json
+└── Program.cs # The starting point for a clean, small app

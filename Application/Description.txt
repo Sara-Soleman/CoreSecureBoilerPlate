@@ -1,0 +1,40 @@
+﻿📁 Application Layer
+In Clean Architecture, all layers revolve around the domain.
+
+Since the domain now contains "static business rules" (entities, currencies, sales), the Application Layer is what drives these rules and implements the user's "use cases."
+
+This layer is entirely based on CQRS (Read-Write Separation) using the popular MediatR library. Its main components are:
+
+Commands (Change Commands): such as "Create a new product" or "Adjust the price."
+
+Queries (Read Requests): such as "Fetch product details" or "Display product list."
+
+Handlers (Handlers): The code that receives the command, requests the entity from the repository, executes the domain function (such as product.AdjustPrice()), and then saves the changes.
+
+Interfaces: Here we place the contracts that this layer needs without executing them (such as the database interface IApplicationDbContext or the repository interface IProductRepository).
+
+How does data flow now?
+
+The Application layer relies on and knows everything about the Domain, but it knows nothing about the Database (EF Core) or the API.
+
+[Web API] ──> [Application] ──> [Domain (built by us)]
+
+📁 YourApp.Application/
+│
+├── 📁 Common/ # Interfaces, Behaviours (Validation, Logging), DTOs
+│ ├── 📁 Interfaces/ # IApplicationDbContext, IProductRepository
+│ └── 📁 Behaviours/ # ValidationBehaviour.cs (MediaR Pipeline)
+│
+└── 📁 Products/ # Segmenting system features based on Feature or Aggregate Root
+
+├── 📁 Commands/ # Operations that change state (Create, Update, Delete)
+
+│ ├── 📁 CreateProduct/
+
+│ └── 📁 AdjustPrice/
+
+└── 📁 Queries/ # Data-reading operations (Get, List)
+
+├── 📁 GetProductById/
+
+└── 📁 DTOs/ # ProductDto.cs
